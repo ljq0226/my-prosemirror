@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import { Schema, Node, DOMParser } from "prosemirror-model";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
@@ -6,6 +6,7 @@ import { undo, redo, history } from "prosemirror-history";
 import { keymap } from "prosemirror-keymap";
 import { baseKeymap, toggleMark } from "prosemirror-commands";
 import { schema } from "../schema";
+import { EditorMenu } from "./EditorMenu";
 
 
 const createDoc = <T extends Schema>(html: string, pmSchema: T) => {
@@ -46,6 +47,8 @@ export type Props = {
 };
 
 const Editor = ({ initialHtml, onChangeHtml }: Props) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, forceUpdate] = useReducer((x) => x + 1, 0);
   const elContentRef = useRef<HTMLDivElement | null>(null);
   const editorViewRef = useRef<EditorView>();
 
@@ -62,16 +65,20 @@ const Editor = ({ initialHtml, onChangeHtml }: Props) => {
         const newState = editorView.state.apply(transaction);
         editorView.updateState(newState);
         onChangeHtml(editorView.dom.innerHTML);
+        forceUpdate();
       },
     });
     editorViewRef.current = editorView;
-
+    forceUpdate();
     return () => {
       editorView.destroy();
     };
   }, []);
   return (
     <div className="relative">
+      {editorViewRef.current && (
+        <EditorMenu editorView={editorViewRef.current} />
+      )}
       <div ref={elContentRef} />
     </div>
   );

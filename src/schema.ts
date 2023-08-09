@@ -78,5 +78,84 @@ export const schema = new Schema({
         return ["u", 0];
       }
     },
+    color: {
+      attrs: {
+        color: {}
+      },
+      parseDOM: [
+        {
+          tag: "span",
+          getAttrs: (dom: string | HTMLElement) => {
+            if (typeof dom === "string") {
+              return false;
+            }
+            const { color } = dom.style;
+            if (!color) {
+              return false;
+            }
+            return {
+              color
+            };
+          }
+        }
+      ],
+      toDOM(mark) {
+        const { color } = mark.attrs;
+        return ["span", { style: `color: ${color}` }, 0];
+      }
+    },
+
+    size: {
+      attrs: {
+        fontSize: {}
+      },
+      parseDOM: [
+        {
+          tag: "span",
+          getAttrs: (dom: string | HTMLElement) => {
+            if (typeof dom === "string") {
+              return false;
+            }
+            const { fontSize } = dom.style;
+            if (!fontSize) {
+              return false;
+            }
+            return {
+              fontSize
+            };
+          }
+        }
+      ],
+      toDOM(mark) {
+        const { fontSize } = mark.attrs;
+        return ["span", { style: `font-size: ${fontSize}` }, 0];
+      }
+    },
+    link: {
+      attrs: {
+        href: {},
+        title: { default: null }
+      },
+      // これがあると末尾で追加することができなくなる
+      inclusive: false,
+      parseDOM: [
+        {
+          tag: "a[href]",
+          getAttrs(dom: string | HTMLElement) {
+            if (typeof dom === "string") {
+              return false;
+            }
+            return {
+              href: dom.getAttribute("href"),
+              title: dom.getAttribute("title")
+            };
+          }
+        }
+      ],
+      toDOM(mark) {
+        const { href, title } = mark.attrs;
+        return ["a", { href, title, target: "_blank" }, 0];
+      }
+    },
   }
 });
