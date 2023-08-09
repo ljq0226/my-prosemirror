@@ -7,7 +7,7 @@ import { keymap } from "prosemirror-keymap";
 import { baseKeymap, toggleMark } from "prosemirror-commands";
 import { schema } from "../schema";
 import { EditorMenu } from "./EditorMenu";
-
+import { selectionLinkTooltipPlugin } from "../plugins/selectionLinkTooltipPlugin";
 
 const createDoc = <T extends Schema>(html: string, pmSchema: T) => {
   const element = document.createElement("div");
@@ -37,6 +37,7 @@ const createPmState = <T extends Schema>(
         Enter: baseKeymap["Enter"],
         Backspace: baseKeymap["Backspace"]
       }),
+      selectionLinkTooltipPlugin()
     ]
   });
 };

@@ -69,7 +69,9 @@ export const MenuItemColor: FC<MenuItemColorProps> = (props) => {
                   setIsOpen(false);
                 }}
               >
-                {COLOR}
+                <div className="inline-b w-4 h-4 " style={{
+                  backgroundColor: COLOR
+                }} />{COLOR}
               </button>
             ))}
           </div>
